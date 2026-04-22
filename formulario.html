@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>BBB 27 - Formulario de inscricao</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body class="form-page">
+    <main class="form-shell">
+      <header class="form-header">
+        <img src="assets/bigWelcomePic_2.jpg" alt="Big Brother Brasil" class="form-logo">
+        <div>
+          <h1>Formulario de inscricao BBB27</h1>
+          <p>Preencha seus dados, envie seu video de apresentacao e escolha suas melhores fotos.</p>
+        </div>
+      </header>
+
+      <form id="application-form" class="application-form" action="taxa.html" method="post" enctype="multipart/form-data">
+        <section class="form-section">
+          <h2>Dados pessoais</h2>
+
+          <div class="form-grid">
+            <label>
+              Nome completo
+              <input type="text" name="nome" autocomplete="name" required>
+            </label>
+
+            <label>
+              Idade
+              <input type="number" name="idade" min="18" max="120" required>
+            </label>
+
+            <label>
+              CPF
+              <input type="text" name="cpf" inputmode="numeric" maxlength="14" placeholder="000.000.000-00" required>
+            </label>
+
+            <label>
+              E-mail
+              <input type="email" name="email" autocomplete="email" required>
+            </label>
+
+            <label>
+              Telefone
+              <input type="tel" name="telefone" autocomplete="tel" placeholder="(21) 99999-9999" required>
+            </label>
+
+            <label>
+              Regiao escolhida
+              <input id="chosen-region" type="text" name="regiao" readonly>
+            </label>
+
+            <label>
+              Cidade
+              <input type="text" name="cidade" autocomplete="address-level2" required>
+            </label>
+
+            <label>
+              Endereco
+              <input type="text" name="endereco" autocomplete="street-address" required>
+            </label>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h2>Sua historia</h2>
+          <label>
+            Por que voce quer entrar no reality show?
+            <textarea name="motivo" rows="8" minlength="40" placeholder="Conte sua historia, sua personalidade e por que voce merece essa chance." required></textarea>
+          </label>
+        </section>
+
+        <section class="form-section">
+          <h2>Arquivos</h2>
+
+          <div class="upload-grid">
+            <label class="upload-box">
+              <span>Video falando sobre voce</span>
+              <input type="file" name="video" accept="video/*" required>
+              <small>Formatos de video do seu aparelho. Envie uma apresentacao clara e com boa luz.</small>
+            </label>
+
+            <label class="upload-box">
+              <span>Fotos</span>
+              <input type="file" name="fotos" accept="image/*" multiple required>
+              <small>Voce pode selecionar varias fotos de uma vez.</small>
+            </label>
+          </div>
+        </section>
+
+        <label class="terms">
+          <input type="checkbox" name="confirmacao" required>
+          Confirmo que as informacoes preenchidas sao verdadeiras e que tenho autorizacao para enviar estes arquivos.
+        </label>
+
+        <div class="form-actions">
+          <a class="secondary-action" href="regioes.html">Voltar</a>
+          <button type="submit">Enviar inscricao</button>
+        </div>
+      </form>
+    </main>
+
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const chosenRegion = document.querySelector("#chosen-region");
+      const form = document.querySelector("#application-form");
+      chosenRegion.value = params.get("regiao") || "Regiao nao informada";
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        if (!form.reportValidity()) {
+          return;
+        }
+
+        const applicationData = {
+          nome: form.elements.nome.value.trim(),
+          idade: form.elements.idade.value.trim(),
+          cpf: form.elements.cpf.value.trim(),
+          email: form.elements.email.value.trim(),
+          telefone: form.elements.telefone.value.trim(),
+          regiao: chosenRegion.value,
+          cidade: form.elements.cidade.value.trim(),
+          endereco: form.elements.endereco.value.trim(),
+          motivo: form.elements.motivo.value.trim(),
+        };
+
+        sessionStorage.setItem("bbbApplicationData", JSON.stringify(applicationData));
+
+        const nextUrl = new URL("taxa.html", window.location.href);
+        nextUrl.searchParams.set("nome", applicationData.nome);
+        nextUrl.searchParams.set("regiao", applicationData.regiao);
+        window.location.href = nextUrl.toString();
+      });
+    </script>
+  </body>
+</html>

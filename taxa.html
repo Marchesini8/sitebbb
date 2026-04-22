@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>BBB 27 - Taxa de inscricao</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body class="fee-page">
+    <main class="fee-shell">
+      <section class="fee-card" aria-labelledby="fee-title">
+        <img src="assets/bigWelcomePic_2.jpg" alt="Big Brother Brasil" class="fee-logo">
+
+        <p class="fee-kicker">Ultima etapa da inscricao</p>
+        <h1 id="fee-title">Taxa de inscricao</h1>
+        <p id="fee-summary" class="fee-summary">
+          Seus dados foram preenchidos com sucesso. Para finalizar a inscricao, realize o pagamento da taxa abaixo.
+        </p>
+
+        <div class="fee-amount">
+          <span>Valor da taxa</span>
+          <strong>R$ 39,90</strong>
+        </div>
+
+        <div class="fee-details">
+          <div>
+            <span>Candidato</span>
+            <strong id="fee-name">Nao informado</strong>
+          </div>
+          <div>
+            <span>Regiao</span>
+            <strong id="fee-region">Nao informada</strong>
+          </div>
+        </div>
+
+        <div class="payment-panel">
+          <h2>Forma de pagamento</h2>
+          <div class="pix-only">
+            <img src="assets/pix-logo.png" alt="Pix">
+            <div>
+              <span>Pagamento via Pix</span>
+              <small>Pagamento instantaneo para finalizar a sua inscricao.</small>
+            </div>
+          </div>
+        </div>
+
+        <div id="pix-result" class="pix-result" hidden>
+          <img id="pix-qr" alt="QR Code Pix" hidden>
+          <label>
+            Codigo Pix copia e cola
+            <textarea id="pix-code" rows="5" readonly></textarea>
+          </label>
+          <button id="copy-pix" class="copy-pix" type="button">Copiar codigo Pix</button>
+          <p id="payment-status" class="payment-status">Aguardando pagamento...</p>
+        </div>
+
+        <p id="payment-error" class="payment-error" hidden></p>
+
+        <div class="fee-actions">
+          <a class="secondary-action" href="formulario.html">Voltar ao formulario</a>
+          <button id="pay-button" type="button">Gerar Pix</button>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const storedData = JSON.parse(sessionStorage.getItem("bbbApplicationData") || "{}");
+      const applicationData = {
+        nome: storedData.nome || params.get("nome") || "Nao informado",
+        cpf: storedData.cpf || "",
+        email: storedData.email || "candidato@example.com",
+        telefone: storedData.telefone || "",
+        regiao: storedData.regiao || params.get("regiao") || "Nao informada",
+        cidade: storedData.cidade || "",
+        endereco: storedData.endereco || "",
+      };
+
+      const feeName = document.querySelector("#fee-name");
+      const feeRegion = document.querySelector("#fee-region");
+      const payButton = document.querySelector("#pay-button");
+      const pixResult = document.querySelector("#pix-result");
+      const pixQr = document.querySelector("#pix-qr");
+      const pixCode = document.querySelector("#pix-code");
+      const copyPix = document.querySelector("#copy-pix");
+      const paymentStatus = document.querySelector("#payment-status");
+      const paymentError = document.querySelector("#payment-error");
+
+      feeName.textContent = applicationData.nome;
+      feeRegion.textContent = applicationData.regiao;
+
+      function normalizeQrCode(base64) {
+        if (!base64) return "";
+        if (base64.startsWith("data:image")) return base64;
+        return `data:image/png;base64,${base64}`;
+      }
+
+      async function pollPaymentStatus(transactionHash) {
+        if (!transactionHash) return;
+
+        window.setInterval(async () => {
+          try {
+            const response = await fetch(`/api/payments/status/${transactionHash}`);
+            const data = await response.json();
+
+            if (data.isPaid || data.status === "paid") {
+              paymentStatus.textContent = "Pagamento confirmado!";
+              paymentStatus.classList.add("is-paid");
+            }
+          } catch (error) {
+            console.warn("Nao foi possivel consultar o status do pagamento.", error);
+          }
+        }, 5000);
+      }
+
+      payButton.addEventListener("click", async () => {
+        paymentError.hidden = true;
+        payButton.disabled = true;
+        payButton.textContent = "Gerando Pix...";
+
+        try {
+          const response = await fetch("/api/payments/checkout", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              items: [
+                {
+                  title: "Taxa de inscricao BBB27",
+                  unitPrice: 39.9,
+                  quantity: 1,
+                },
+              ],
+              customer: {
+                name: applicationData.nome,
+                email: applicationData.email,
+                cpf: applicationData.cpf,
+                phone: applicationData.telefone,
+                city: applicationData.cidade,
+              },
+              delivery: {
+                address: applicationData.endereco,
+                city: applicationData.cidade,
+              },
+            }),
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data.error || "Nao foi possivel gerar o Pix.");
+          }
+
+          pixCode.value = data.pix_code || "";
+
+          const qrCode = normalizeQrCode(data.pix_base64);
+          if (qrCode) {
+            pixQr.src = qrCode;
+            pixQr.hidden = false;
+          }
+
+          pixResult.hidden = false;
+          paymentStatus.textContent = "Pix gerado. Aguardando pagamento...";
+          payButton.textContent = "Pix gerado";
+          pollPaymentStatus(data.transaction_hash);
+        } catch (error) {
+          paymentError.textContent = error.message;
+          paymentError.hidden = false;
+          payButton.disabled = false;
+          payButton.textContent = "Gerar Pix";
+        }
+      });
+
+      copyPix.addEventListener("click", async () => {
+        await navigator.clipboard.writeText(pixCode.value);
+        copyPix.textContent = "Codigo copiado";
+        window.setTimeout(() => {
+          copyPix.textContent = "Copiar codigo Pix";
+        }, 1800);
+      });
+    </script>
+  </body>
+</html>
