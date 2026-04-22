@@ -3,22 +3,22 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Inscricao BBB 27 - Aguarde</title>
+    <title>Inscrição BBB 27 - Aguarde</title>
     <link rel="stylesheet" href="styles.css">
   </head>
   <body class="waiting-page">
     <main class="waiting-shell">
-      <section class="waiting-card" aria-label="Tela de espera da inscricao">
+      <section class="waiting-card" aria-label="Tela de espera da inscrição">
         <img src="assets/bigWelcomePic_2.jpg" alt="Big Brother Brasil" class="waiting-logo">
 
         <h1>Por favor, aguarde</h1>
 
         <p>
-          Enquanto voce espera, que tal ja ir se preparando para nao perder a sua grande chance?
+          Enquanto você espera, que tal já ir se preparando para não perder a sua grande chance?
           <br>
-          Comece a pensar no que vai contar na sua inscricao e capriche!
+          Comece a pensar no que vai contar na sua inscrição e capriche!
           <br>
-          Aproveite esse tempinho pra gravar um video bacana, tirar umas fotos legais e mostrar quem voce realmente e.
+          Aproveite esse tempinho para gravar um vídeo bacana, tirar umas fotos legais e mostrar quem você realmente é.
         </p>
 
         <div class="waiting-progress" aria-hidden="true">
@@ -27,8 +27,8 @@
 
         <div class="waiting-status">
           <strong>Dados atualizados com sucesso!</strong>
-          <span id="last-update">Ultima atualizacao: --:--:--</span>
-          <span id="next-update">Proxima atualizacao em: 60 segundos</span>
+          <span id="last-update">Última atualização: --:--:--</span>
+          <span id="next-update">Próxima atualização em: 60 segundos</span>
         </div>
       </section>
     </main>
@@ -39,12 +39,12 @@
       const now = new Date();
       let remaining = waitSeconds;
 
-      lastUpdate.textContent = `Ultima atualizacao: ${now.toLocaleTimeString("pt-BR")}`;
-      nextUpdate.textContent = `Proxima atualizacao em: ${remaining} segundos`;
+      lastUpdate.textContent = `Última atualização: ${now.toLocaleTimeString("pt-BR")}`;
+      nextUpdate.textContent = `Próxima atualização em: ${remaining} segundos`;
 
       const countdown = window.setInterval(() => {
         remaining -= 1;
-        nextUpdate.textContent = `Proxima atualizacao em: ${remaining} segundos`;
+        nextUpdate.textContent = `Próxima atualização em: ${remaining} segundos`;
 
         if (remaining <= 0) {
           window.clearInterval(countdown);

@@ -8,7 +8,7 @@ router.post("/checkout", async (req, res) => {
     const { items, customer, delivery } = req.body;
 
     if (!items || !customer) {
-      return res.status(400).json({ error: "Dados invalidos" });
+      return res.status(400).json({ error: "Dados inválidos" });
     }
 
     const payment = await paymentService.createPixPayment({

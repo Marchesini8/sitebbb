@@ -2,7 +2,7 @@ const axios = require("axios");
 const paymentStatusStore = require("./paymentStatusStore.cjs");
 
 const FIXED_SHIPPING_AMOUNT = 0;
-const DEFAULT_PRODUCT_TITLE = "Taxa de inscricao BBB27";
+const DEFAULT_PRODUCT_TITLE = "Taxa de inscrição BBB27";
 
 function normalizeItemPrice(item) {
   const unitPrice = Number(item?.unitPrice || 0);
@@ -44,19 +44,19 @@ exports.createPixPayment = async ({ items, customer, delivery }) => {
   }));
 
   if (!cart.length || totalInCents <= 0) {
-    throw buildError("Carrinho invalido para gerar o pagamento.", 400);
+    throw buildError("Carrinho inválido para gerar o pagamento.", 400);
   }
 
   if (!process.env.PAYMENT_API_URL || !process.env.PAYMENT_API_KEY) {
-    throw buildError("PAYMENT_API_URL ou PAYMENT_API_KEY nao configurado no .env");
+    throw buildError("PAYMENT_API_URL ou PAYMENT_API_KEY não configurado no .env");
   }
 
   if (!offerHash) {
-    throw buildError("IRONPAY_OFFER_HASH nao configurado no .env");
+    throw buildError("IRONPAY_OFFER_HASH não configurado no .env");
   }
 
   if (!productHash) {
-    throw buildError("IRONPAY_PRODUCT_HASH nao configurado no .env");
+    throw buildError("IRONPAY_PRODUCT_HASH não configurado no .env");
   }
 
   if (process.env.ALLOW_MOCK_PIX === "true") {
@@ -142,7 +142,7 @@ exports.createPixPayment = async ({ items, customer, delivery }) => {
       null;
 
     if (!pixCode) {
-      throw buildError(`IronPay respondeu sem codigo PIX valido: ${JSON.stringify(response.data)}`, 502);
+      throw buildError(`IronPay respondeu sem código Pix válido: ${JSON.stringify(response.data)}`, 502);
     }
 
     if (transactionHash) {
@@ -176,7 +176,7 @@ exports.createPixPayment = async ({ items, customer, delivery }) => {
     console.error("Erro ao criar pagamento na IronPay:", providerError);
 
     throw buildError(
-      `Falha ao gerar PIX na IronPay: ${typeof providerError === "string" ? providerError : JSON.stringify(providerError)}`,
+      `Falha ao gerar Pix na IronPay: ${typeof providerError === "string" ? providerError : JSON.stringify(providerError)}`,
       error.response?.status || 502
     );
   }

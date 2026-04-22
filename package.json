@@ -2,6 +2,9 @@
   "name": "site-inscricao-bbb",
   "version": "1.0.0",
   "private": true,
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "node server.cjs",
     "start": "node server.cjs",
