@@ -1281,6 +1281,84 @@ figcaption {
   transform: none;
 }
 
+.success-page {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 50% -10%, rgba(255, 196, 0, 0.2), transparent 35%),
+    linear-gradient(180deg, #ffffff 0%, #f4f0ff 100%);
+  color: #111;
+}
+
+.success-shell {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 34px 16px;
+}
+
+.success-card {
+  width: min(620px, 100%);
+  border: 1px solid #d8c9f7;
+  border-radius: 8px;
+  padding: 34px 28px;
+  background: #fff;
+  text-align: center;
+  box-shadow: 0 24px 54px rgba(95, 0, 201, 0.15);
+  animation: waiting-card-in 720ms var(--ease) both;
+}
+
+.success-logo {
+  display: block;
+  width: 230px;
+  height: 96px;
+  object-fit: cover;
+  margin: 0 auto 22px;
+}
+
+.success-kicker {
+  margin: 0 0 8px;
+  color: var(--purple);
+  font-size: 13px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.success-card h1 {
+  width: auto;
+  margin: 0 0 14px;
+  color: #111;
+  font-size: 42px;
+}
+
+.success-card p {
+  width: min(480px, 100%);
+  margin: 0 auto 26px;
+  color: #424a55;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.success-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  border-radius: 4px;
+  padding: 0 20px;
+  color: #fff;
+  background: var(--purple);
+  font-size: 15px;
+  font-weight: 900;
+  box-shadow: 0 10px 20px rgba(95, 0, 201, 0.18);
+}
+
+.success-action:hover {
+  opacity: 1;
+  transform: translateY(-2px);
+  background: var(--purple-soft);
+}
+
 @keyframes page-fade {
   from {
     opacity: 0;

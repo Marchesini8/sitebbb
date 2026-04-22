@@ -85,6 +85,7 @@
       const copyPix = document.querySelector("#copy-pix");
       const paymentStatus = document.querySelector("#payment-status");
       const paymentError = document.querySelector("#payment-error");
+      let statusPollTimer = null;
 
       feeName.textContent = applicationData.nome;
       feeRegion.textContent = applicationData.regiao;
@@ -98,7 +99,7 @@
       async function pollPaymentStatus(transactionHash) {
         if (!transactionHash) return;
 
-        window.setInterval(async () => {
+        statusPollTimer = window.setInterval(async () => {
           try {
             const response = await fetch(`/api/payments/status/${transactionHash}`);
             const data = await response.json();
@@ -106,6 +107,10 @@
             if (data.isPaid || data.status === "paid") {
               paymentStatus.textContent = "Pagamento confirmado!";
               paymentStatus.classList.add("is-paid");
+              window.clearInterval(statusPollTimer);
+              window.setTimeout(() => {
+                window.location.href = "sucesso.html";
+              }, 1200);
             }
           } catch (error) {
             console.warn("Não foi possível consultar o status do pagamento.", error);
