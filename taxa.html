@@ -9,26 +9,26 @@
   <body class="fee-page">
     <main class="fee-shell">
       <section class="fee-card" aria-labelledby="fee-title">
-        <img src="assets/bigWelcomePic_2.jpg" alt="Big Brother Brasil" class="fee-logo">
+        <img id="checkout-image" src="assets/bigWelcomePic_2.jpg" alt="Big Brother Brasil" class="fee-logo">
 
-        <p class="fee-kicker">Última etapa da inscrição</p>
+        <p id="fee-kicker" class="fee-kicker">Última etapa da inscrição</p>
         <h1 id="fee-title">Taxa de inscrição</h1>
         <p id="fee-summary" class="fee-summary">
           Seus dados foram preenchidos com sucesso. Para finalizar a inscrição, realize o pagamento da taxa abaixo.
         </p>
 
         <div class="fee-amount">
-          <span>Valor da taxa</span>
-          <strong>R$ 39,90</strong>
+          <span id="amount-label">Valor da taxa</span>
+          <strong id="fee-amount-value">R$ 39,90</strong>
         </div>
 
         <div class="fee-details">
           <div>
-            <span>Candidato</span>
+            <span id="primary-detail-label">Candidato</span>
             <strong id="fee-name">Não informado</strong>
           </div>
           <div>
-            <span>Região</span>
+            <span id="secondary-detail-label">Região</span>
             <strong id="fee-region">Não informada</strong>
           </div>
         </div>
@@ -39,7 +39,7 @@
             <img src="assets/pix-logo.png" alt="Pix">
             <div>
               <span>Pagamento via Pix</span>
-              <small>Pagamento instantâneo para finalizar a sua inscrição.</small>
+              <small id="pix-helper">Pagamento instantâneo para finalizar a sua inscrição.</small>
             </div>
           </div>
         </div>
@@ -57,7 +57,7 @@
         <p id="payment-error" class="payment-error" hidden></p>
 
         <div class="fee-actions">
-          <a class="secondary-action" href="formulario.html">Voltar ao formulário</a>
+          <a id="back-link" class="secondary-action" href="formulario.html">Voltar ao formulário</a>
         </div>
       </section>
     </main>
@@ -65,6 +65,23 @@
     <script>
       const params = new URLSearchParams(window.location.search);
       const storedData = JSON.parse(sessionStorage.getItem("bbbApplicationData") || "{}");
+      const products = {
+        "album-copa-2026": {
+          title: "Álbum Capa Dura Copa Do Mundo 2026 Fifa World Cup 2026",
+          price: 37.35,
+          formattedPrice: "R$ 249,00 por R$ 37,35",
+          image: "https://images4.kabum.com.br/produtos/fotos/sync_mirakl/1031514/xlarge/-lbum-Capa-Dura-Copa-Do-Mundo-2026-Fifa-World-Cup-2026_1776911018.jpg",
+          returnUrl: "produto-album-copa-2026.html"
+        }
+      };
+      const selectedProduct = products[params.get("produto")];
+      const checkoutItem = selectedProduct || {
+        title: "Taxa de inscrição BBB27",
+        price: 39.9,
+        formattedPrice: "R$ 39,90",
+        image: "assets/bigWelcomePic_2.jpg",
+        returnUrl: "formulario.html"
+      };
       const applicationData = {
         nome: storedData.nome || params.get("nome") || "Não informado",
         cpf: storedData.cpf || "",
@@ -75,8 +92,18 @@
         endereco: storedData.endereco || "",
       };
 
+      const checkoutImage = document.querySelector("#checkout-image");
+      const feeKicker = document.querySelector("#fee-kicker");
+      const feeTitle = document.querySelector("#fee-title");
+      const feeSummary = document.querySelector("#fee-summary");
+      const amountLabel = document.querySelector("#amount-label");
+      const amountValue = document.querySelector("#fee-amount-value");
+      const primaryDetailLabel = document.querySelector("#primary-detail-label");
+      const secondaryDetailLabel = document.querySelector("#secondary-detail-label");
       const feeName = document.querySelector("#fee-name");
       const feeRegion = document.querySelector("#fee-region");
+      const pixHelper = document.querySelector("#pix-helper");
+      const backLink = document.querySelector("#back-link");
       const pixResult = document.querySelector("#pix-result");
       const pixQr = document.querySelector("#pix-qr");
       const pixCode = document.querySelector("#pix-code");
@@ -85,8 +112,27 @@
       const paymentError = document.querySelector("#payment-error");
       let statusPollTimer = null;
 
-      feeName.textContent = applicationData.nome;
-      feeRegion.textContent = applicationData.regiao;
+      checkoutImage.src = checkoutItem.image;
+      amountValue.textContent = checkoutItem.formattedPrice;
+      backLink.href = checkoutItem.returnUrl;
+
+      if (selectedProduct) {
+        checkoutImage.alt = selectedProduct.title;
+        checkoutImage.classList.add("is-product");
+        feeKicker.textContent = "Checkout seguro";
+        feeTitle.textContent = selectedProduct.title;
+        feeSummary.textContent = "Confira o produto e pague via Pix para concluir o pedido.";
+        amountLabel.textContent = "Valor do produto";
+        primaryDetailLabel.textContent = "Produto";
+        secondaryDetailLabel.textContent = "Entrega";
+        feeName.textContent = selectedProduct.title;
+        feeRegion.textContent = "Pedido online";
+        pixHelper.textContent = "Pagamento instantâneo para concluir a compra do álbum.";
+        backLink.textContent = "Voltar ao álbum";
+      } else {
+        feeName.textContent = applicationData.nome;
+        feeRegion.textContent = applicationData.regiao;
+      }
 
       function normalizeQrCode(base64) {
         if (!base64) return "";
@@ -137,9 +183,10 @@
             body: JSON.stringify({
               items: [
                 {
-                  title: "Taxa de inscrição BBB27",
-                  unitPrice: 39.9,
+                  title: checkoutItem.title,
+                  unitPrice: checkoutItem.price,
                   quantity: 1,
+                  image: checkoutItem.image,
                 },
               ],
               customer: {
