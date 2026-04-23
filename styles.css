@@ -431,8 +431,8 @@ figcaption {
 
 .content-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 248px;
-  gap: 44px;
+  grid-template-columns: 1fr;
+  gap: 0;
   align-items: start;
   width: min(620px, 100%);
   margin: 0 auto;
@@ -443,43 +443,6 @@ figcaption {
   margin: 0 0 14px;
   font-size: 17px;
   line-height: 1.55;
-}
-
-.side-ad {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  width: 248px;
-  min-height: 132px;
-  padding: 8px 0 0;
-  background: #fff;
-  transition: transform 260ms var(--ease), box-shadow 260ms var(--ease);
-}
-
-.side-ad:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 24px rgba(17, 24, 39, 0.12);
-}
-
-.side-ad img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-.side-ad a {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 28px;
-  border-radius: 4px;
-  padding: 0 14px;
-  color: #fff;
-  background: #138a2f;
-  font-size: 12px;
-  font-weight: 900;
 }
 
 .cta-section,
@@ -1991,26 +1954,18 @@ figcaption {
     gap: 24px;
   }
 
-  .side-ad {
-    width: min(280px, 100%);
-  }
-
   .ad-rotator {
     width: calc(100vw - 28px);
   }
 
   .featured-product {
-    position: fixed;
-    right: 12px;
-    bottom: 12px;
-    z-index: 40;
     grid-template-columns: 58px minmax(0, 1fr);
     gap: 10px;
     width: min(300px, calc(100vw - 24px));
-    margin: 0;
+    margin: 28px auto 0;
     border-color: #cbd8e5;
     padding: 10px;
-    box-shadow: 0 18px 36px rgba(17, 24, 39, 0.22);
+    box-shadow: 0 12px 26px rgba(17, 24, 39, 0.12);
   }
 
   .featured-product img {
