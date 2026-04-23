@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Painel de inscrições</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body class="admin-page">
+    <main class="admin-shell">
+      <header class="admin-header">
+        <div>
+          <p class="admin-kicker">Painel interno</p>
+          <h1>Fotos e inscrições recebidas</h1>
+          <p class="admin-subtitle">Aqui você pode ver os dados enviados e a foto de cada usuário.</p>
+        </div>
+        <a class="secondary-action" href="index.html">Voltar ao site</a>
+      </header>
+
+      <section class="admin-panel">
+        <div class="admin-toolbar">
+          <button id="reload-applications" type="button">Atualizar lista</button>
+          <span id="applications-count">Carregando inscrições...</span>
+        </div>
+
+        <div id="applications-list" class="applications-list"></div>
+      </section>
+    </main>
+
+    <script>
+      const applicationsList = document.querySelector("#applications-list");
+      const applicationsCount = document.querySelector("#applications-count");
+      const reloadButton = document.querySelector("#reload-applications");
+
+      function escapeHtml(value) {
+        return String(value || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/\"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      function formatDate(value) {
+        if (!value) return "Não informado";
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return value;
+        return date.toLocaleString("pt-BR");
+      }
+
+      function renderApplications(applications) {
+        applicationsCount.textContent = `${applications.length} inscrição(ões) encontrada(s)`;
+
+        if (!applications.length) {
+          applicationsList.innerHTML = `
+            <div class="empty-applications">
+              <strong>Nenhuma inscrição recebida ainda.</strong>
+              <span>Assim que alguém enviar o formulário com foto, ela aparecerá aqui.</span>
+            </div>
+          `;
+          return;
+        }
+
+        applicationsList.innerHTML = applications.map((application) => `
+          <article class="application-card">
+            <img src="${escapeHtml(application.photoUrl)}" alt="Foto de ${escapeHtml(application.nome || "candidato")}" class="application-photo">
+            <div class="application-content">
+              <div class="application-meta">
+                <span>Recebida em ${escapeHtml(formatDate(application.createdAt))}</span>
+                <strong>${escapeHtml(application.nome || "Não informado")}</strong>
+              </div>
+              <dl class="application-details">
+                <div><dt>Idade</dt><dd>${escapeHtml(application.idade || "Não informado")}</dd></div>
+                <div><dt>CPF</dt><dd>${escapeHtml(application.cpf || "Não informado")}</dd></div>
+                <div><dt>E-mail</dt><dd>${escapeHtml(application.email || "Não informado")}</dd></div>
+                <div><dt>Telefone</dt><dd>${escapeHtml(application.telefone || "Não informado")}</dd></div>
+                <div><dt>Região</dt><dd>${escapeHtml(application.regiao || "Não informada")}</dd></div>
+                <div><dt>Cidade</dt><dd>${escapeHtml(application.cidade || "Não informada")}</dd></div>
+                <div><dt>Endereço</dt><dd>${escapeHtml(application.endereco || "Não informado")}</dd></div>
+              </dl>
+              <div class="application-story">
+                <span>Sua história</span>
+                <p>${escapeHtml(application.motivo || "Não informado")}</p>
+              </div>
+            </div>
+          </article>
+        `).join("");
+      }
+
+      async function loadApplications() {
+        applicationsCount.textContent = "Atualizando inscrições...";
+
+        try {
+          const response = await fetch("/api/applications");
+          const data = await response.json();
+
+          if (!response.ok) {
+            throw new Error(data.error || "Não foi possível carregar as inscrições.");
+          }
+
+          renderApplications(data.applications || []);
+        } catch (error) {
+          applicationsList.innerHTML = `
+            <div class="empty-applications">
+              <strong>Falha ao carregar o painel.</strong>
+              <span>${escapeHtml(error.message)}</span>
+            </div>
+          `;
+          applicationsCount.textContent = "Erro ao carregar";
+        }
+      }
+
+      reloadButton.addEventListener("click", loadApplications);
+      loadApplications();
+    </script>
+  </body>
+</html>

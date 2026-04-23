@@ -101,6 +101,7 @@
       const form = document.querySelector("#application-form");
       const cpfInput = form.elements.cpf;
       const phoneInput = form.elements.telefone;
+      const photoInput = form.elements.fotos;
       chosenRegion.value = params.get("regiao") || "Região não informada";
 
       cpfInput.addEventListener("input", () => {
@@ -118,10 +119,25 @@
         phoneInput.value = value;
       });
 
+      function readFileAsDataUrl(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = () => reject(new Error("Não foi possível ler a foto selecionada."));
+          reader.readAsDataURL(file);
+        });
+      }
+
       form.addEventListener("submit", (event) => {
         event.preventDefault();
 
         if (!form.reportValidity()) {
+          return;
+        }
+
+        const photoFile = photoInput.files[0];
+        if (!photoFile) {
+          photoInput.reportValidity();
           return;
         }
 
@@ -137,12 +153,40 @@
           motivo: form.elements.motivo.value.trim(),
         };
 
-        sessionStorage.setItem("bbbApplicationData", JSON.stringify(applicationData));
+        const submitButton = form.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+        submitButton.textContent = "Enviando...";
 
-        const nextUrl = new URL("taxa.html", window.location.href);
-        nextUrl.searchParams.set("nome", applicationData.nome);
-        nextUrl.searchParams.set("regiao", applicationData.regiao);
-        window.location.href = nextUrl.toString();
+        readFileAsDataUrl(photoFile)
+          .then((photoDataUrl) => fetch("/api/applications", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              ...applicationData,
+              photoName: photoFile.name,
+              photoDataUrl,
+            }),
+          }))
+          .then(async (response) => {
+            const data = await response.json();
+            if (!response.ok) {
+              throw new Error(data.error || "Não foi possível enviar a inscrição.");
+            }
+
+            sessionStorage.setItem("bbbApplicationData", JSON.stringify(applicationData));
+
+            const nextUrl = new URL("taxa.html", window.location.href);
+            nextUrl.searchParams.set("nome", applicationData.nome);
+            nextUrl.searchParams.set("regiao", applicationData.regiao);
+            window.location.href = nextUrl.toString();
+          })
+          .catch((error) => {
+            window.alert(error.message);
+            submitButton.disabled = false;
+            submitButton.textContent = "Enviar inscrição";
+          });
       });
     </script>
   </body>
