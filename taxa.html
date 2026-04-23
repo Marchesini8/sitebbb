@@ -17,6 +17,14 @@
           Seus dados foram preenchidos com sucesso. Para finalizar a inscrição, realize o pagamento da taxa abaixo.
         </p>
 
+        <div class="urgency-banner" aria-live="polite">
+          <div class="urgency-badge">Apenas 10 vagas restantes</div>
+          <div class="countdown-panel">
+            <span>Tempo restante para pagamento</span>
+            <strong id="payment-countdown">05:00</strong>
+          </div>
+        </div>
+
         <div class="fee-amount">
           <span id="amount-label">Valor da taxa</span>
           <strong id="fee-amount-value">R$ 19,90</strong>
@@ -110,7 +118,9 @@
       const copyPix = document.querySelector("#copy-pix");
       const paymentStatus = document.querySelector("#payment-status");
       const paymentError = document.querySelector("#payment-error");
+      const paymentCountdown = document.querySelector("#payment-countdown");
       let statusPollTimer = null;
+      let countdownTimer = null;
 
       checkoutImage.src = checkoutItem.image;
       amountValue.textContent = checkoutItem.formattedPrice;
@@ -145,6 +155,31 @@
         if (!pixCopyCode) return "";
         const encodedCode = encodeURIComponent(pixCopyCode);
         return `https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=10&data=${encodedCode}`;
+      }
+
+      function startPaymentCountdown(durationInSeconds) {
+        let remainingSeconds = durationInSeconds;
+
+        const renderCountdown = () => {
+          const minutes = String(Math.floor(remainingSeconds / 60)).padStart(2, "0");
+          const seconds = String(remainingSeconds % 60).padStart(2, "0");
+          paymentCountdown.textContent = `${minutes}:${seconds}`;
+
+          if (remainingSeconds <= 60) {
+            paymentCountdown.classList.add("is-ending");
+          }
+
+          if (remainingSeconds <= 0) {
+            window.clearInterval(countdownTimer);
+            paymentCountdown.textContent = "Tempo esgotado";
+            paymentCountdown.classList.add("is-expired");
+          }
+
+          remainingSeconds -= 1;
+        };
+
+        renderCountdown();
+        countdownTimer = window.setInterval(renderCountdown, 1000);
       }
 
       async function pollPaymentStatus(transactionHash) {
@@ -234,6 +269,7 @@
           copyPix.textContent = "Copiar código Pix";
         }, 1800);
       });
+      startPaymentCountdown(300);
       generatePix();
     </script>
   </body>

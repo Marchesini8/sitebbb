@@ -1564,6 +1564,60 @@ figcaption {
   text-align: center;
 }
 
+.urgency-banner {
+  display: grid;
+  gap: 12px;
+  margin: 0 0 22px;
+}
+
+.urgency-badge,
+.countdown-panel {
+  border-radius: 10px;
+  padding: 14px 16px;
+  text-align: center;
+}
+
+.urgency-badge {
+  color: #fff;
+  background: linear-gradient(135deg, #cf2e2e, #ff6b3d);
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  box-shadow: 0 12px 24px rgba(207, 46, 46, 0.22);
+}
+
+.countdown-panel {
+  border: 1px solid #ffd0c2;
+  background: #fff6f2;
+}
+
+.countdown-panel span {
+  display: block;
+  color: #8c3a20;
+  font-size: 12px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.countdown-panel strong {
+  display: block;
+  margin-top: 6px;
+  color: #d53c13;
+  font-size: 34px;
+  line-height: 1;
+}
+
+.countdown-panel strong.is-ending {
+  color: #c62828;
+  animation: countdown-pulse 1s ease-in-out infinite;
+}
+
+.countdown-panel strong.is-expired {
+  color: #7a1f1f;
+  animation: none;
+}
+
 .fee-amount {
   display: grid;
   justify-items: center;
@@ -2093,6 +2147,17 @@ figcaption {
 
   to {
     transform: translateX(158%);
+  }
+}
+
+@keyframes countdown-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.04);
   }
 }
 
