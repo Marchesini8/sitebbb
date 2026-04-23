@@ -28,12 +28,12 @@
         <div class="waiting-status">
           <strong>Dados atualizados com sucesso!</strong>
           <span id="last-update">Última atualização: --:--:--</span>
-          <span id="next-update">Próxima atualização em: 60 segundos</span>
+          <span id="next-update">Próxima atualização em: 25 segundos</span>
         </div>
       </section>
     </main>
     <script>
-      const waitSeconds = Math.floor(Math.random() * 121) + 60;
+      const waitSeconds = 25;
       const lastUpdate = document.querySelector("#last-update");
       const nextUpdate = document.querySelector("#next-update");
       const now = new Date();

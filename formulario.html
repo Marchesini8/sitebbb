@@ -43,7 +43,7 @@
 
             <label>
               Telefone
-              <input type="tel" name="telefone" autocomplete="tel" placeholder="(21) 99999-9999" required>
+              <input type="tel" name="telefone" autocomplete="tel" inputmode="numeric" maxlength="15" pattern="\(\d{2}\) \d{5}-\d{4}" placeholder="(21) 99999-9999" required>
             </label>
 
             <label>
@@ -106,6 +106,7 @@
       const chosenRegion = document.querySelector("#chosen-region");
       const form = document.querySelector("#application-form");
       const cpfInput = form.elements.cpf;
+      const phoneInput = form.elements.telefone;
       chosenRegion.value = params.get("regiao") || "Região não informada";
 
       cpfInput.addEventListener("input", () => {
@@ -114,6 +115,13 @@
         value = value.replace(/(\d{3})\.(\d{3})(\d)/, "$1.$2.$3");
         value = value.replace(/(\d{3})\.(\d{3})\.(\d{3})(\d)/, "$1.$2.$3-$4");
         cpfInput.value = value;
+      });
+
+      phoneInput.addEventListener("input", () => {
+        let value = phoneInput.value.replace(/\D/g, "").slice(0, 11);
+        value = value.replace(/(\d{2})(\d)/, "($1) $2");
+        value = value.replace(/(\(\d{2}\) \d{5})(\d)/, "$1-$2");
+        phoneInput.value = value;
       });
 
       form.addEventListener("submit", (event) => {

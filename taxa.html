@@ -58,7 +58,6 @@
 
         <div class="fee-actions">
           <a class="secondary-action" href="formulario.html">Voltar ao formulário</a>
-          <button id="pay-button" type="button">Gerar Pix</button>
         </div>
       </section>
     </main>
@@ -78,7 +77,6 @@
 
       const feeName = document.querySelector("#fee-name");
       const feeRegion = document.querySelector("#fee-region");
-      const payButton = document.querySelector("#pay-button");
       const pixResult = document.querySelector("#pix-result");
       const pixQr = document.querySelector("#pix-qr");
       const pixCode = document.querySelector("#pix-code");
@@ -93,7 +91,14 @@
       function normalizeQrCode(base64) {
         if (!base64) return "";
         if (base64.startsWith("data:image")) return base64;
+        if (base64.startsWith("http")) return base64;
         return `data:image/png;base64,${base64}`;
+      }
+
+      function buildQrCodeUrl(pixCopyCode) {
+        if (!pixCopyCode) return "";
+        const encodedCode = encodeURIComponent(pixCopyCode);
+        return `https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=10&data=${encodedCode}`;
       }
 
       async function pollPaymentStatus(transactionHash) {
@@ -118,10 +123,10 @@
         }, 5000);
       }
 
-      payButton.addEventListener("click", async () => {
+      async function generatePix() {
         paymentError.hidden = true;
-        payButton.disabled = true;
-        payButton.textContent = "Gerando Pix...";
+        pixResult.hidden = false;
+        paymentStatus.textContent = "Gerando Pix...";
 
         try {
           const response = await fetch("/api/payments/checkout", {
@@ -159,7 +164,7 @@
 
           pixCode.value = data.pix_code || "";
 
-          const qrCode = normalizeQrCode(data.pix_base64);
+          const qrCode = normalizeQrCode(data.pix_base64) || buildQrCodeUrl(pixCode.value);
           if (qrCode) {
             pixQr.src = qrCode;
             pixQr.hidden = false;
@@ -167,15 +172,13 @@
 
           pixResult.hidden = false;
           paymentStatus.textContent = "Pix gerado. Aguardando pagamento...";
-          payButton.textContent = "Pix gerado";
           pollPaymentStatus(data.transaction_hash);
         } catch (error) {
           paymentError.textContent = error.message;
           paymentError.hidden = false;
-          payButton.disabled = false;
-          payButton.textContent = "Gerar Pix";
+          paymentStatus.textContent = "Não foi possível gerar o Pix automaticamente.";
         }
-      });
+      }
 
       copyPix.addEventListener("click", async () => {
         await navigator.clipboard.writeText(pixCode.value);
@@ -184,6 +187,7 @@
           copyPix.textContent = "Copiar código Pix";
         }, 1800);
       });
+      generatePix();
     </script>
   </body>
 </html>
