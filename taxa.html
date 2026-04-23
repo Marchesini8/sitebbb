@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>BBB 27 - Taxa de inscrição</title>
+    <title>BBB 27 - Taxa de inscricao</title>
     <link rel="stylesheet" href="styles.css">
   </head>
   <body class="fee-page">
@@ -11,25 +11,25 @@
       <section class="fee-card" aria-labelledby="fee-title">
         <img id="checkout-image" src="assets/bigWelcomePic_2.jpg" alt="Big Brother Brasil" class="fee-logo">
 
-        <p id="fee-kicker" class="fee-kicker">Última etapa da inscrição</p>
-        <h1 id="fee-title">Taxa de inscrição</h1>
+        <p id="fee-kicker" class="fee-kicker">Ultima etapa da inscricao</p>
+        <h1 id="fee-title">Taxa de inscricao</h1>
         <p id="fee-summary" class="fee-summary">
-          Seus dados foram preenchidos com sucesso. Para finalizar a inscrição, realize o pagamento da taxa abaixo.
+          Seus dados foram preenchidos com sucesso. Para finalizar a inscricao, realize o pagamento da taxa abaixo.
         </p>
 
         <div class="fee-amount">
           <span id="amount-label">Valor da taxa</span>
-          <strong id="fee-amount-value">R$ 39,90</strong>
+          <strong id="fee-amount-value">R$ 19,90</strong>
         </div>
 
         <div class="fee-details">
           <div>
             <span id="primary-detail-label">Candidato</span>
-            <strong id="fee-name">Não informado</strong>
+            <strong id="fee-name">Nao informado</strong>
           </div>
           <div>
-            <span id="secondary-detail-label">Região</span>
-            <strong id="fee-region">Não informada</strong>
+            <span id="secondary-detail-label">Regiao</span>
+            <strong id="fee-region">Nao informada</strong>
           </div>
         </div>
 
@@ -39,7 +39,7 @@
             <img src="assets/pix-logo.png" alt="Pix">
             <div>
               <span>Pagamento via Pix</span>
-              <small id="pix-helper">Pagamento instantâneo para finalizar a sua inscrição.</small>
+              <small id="pix-helper">Pagamento instantaneo para finalizar a sua inscricao.</small>
             </div>
           </div>
         </div>
@@ -47,17 +47,17 @@
         <div id="pix-result" class="pix-result" hidden>
           <img id="pix-qr" alt="QR Code Pix" hidden>
           <label>
-            Código Pix copia e cola
+            Codigo Pix copia e cola
             <textarea id="pix-code" rows="5" readonly></textarea>
           </label>
-          <button id="copy-pix" class="copy-pix" type="button">Copiar código Pix</button>
+          <button id="copy-pix" class="copy-pix" type="button">Copiar codigo Pix</button>
           <p id="payment-status" class="payment-status">Aguardando pagamento...</p>
         </div>
 
         <p id="payment-error" class="payment-error" hidden></p>
 
         <div class="fee-actions">
-          <a id="back-link" class="secondary-action" href="formulario.html">Voltar ao formulário</a>
+          <a id="back-link" class="secondary-action" href="formulario.html">Voltar ao formulario</a>
         </div>
       </section>
     </main>
@@ -67,7 +67,7 @@
       const storedData = JSON.parse(sessionStorage.getItem("bbbApplicationData") || "{}");
       const products = {
         "album-copa-2026": {
-          title: "Álbum Capa Dura Copa Do Mundo 2026 Fifa World Cup 2026",
+          title: "Album Capa Dura Copa Do Mundo 2026 Fifa World Cup 2026",
           price: 37.35,
           formattedPrice: "R$ 249,00 por R$ 37,35",
           image: "https://images4.kabum.com.br/produtos/fotos/sync_mirakl/1031514/xlarge/-lbum-Capa-Dura-Copa-Do-Mundo-2026-Fifa-World-Cup-2026_1776911018.jpg",
@@ -76,18 +76,18 @@
       };
       const selectedProduct = products[params.get("produto")];
       const checkoutItem = selectedProduct || {
-        title: "Taxa de inscrição BBB27",
-        price: 39.9,
-        formattedPrice: "R$ 39,90",
+        title: "Taxa de inscricao BBB27",
+        price: 19.9,
+        formattedPrice: "R$ 19,90",
         image: "assets/bigWelcomePic_2.jpg",
         returnUrl: "formulario.html"
       };
       const applicationData = {
-        nome: storedData.nome || params.get("nome") || "Não informado",
+        nome: storedData.nome || params.get("nome") || "Nao informado",
         cpf: storedData.cpf || "",
         email: storedData.email || "candidato@example.com",
         telefone: storedData.telefone || "",
-        regiao: storedData.regiao || params.get("regiao") || "Não informada",
+        regiao: storedData.regiao || params.get("regiao") || "Nao informada",
         cidade: storedData.cidade || "",
         endereco: storedData.endereco || "",
       };
@@ -127,8 +127,8 @@
         secondaryDetailLabel.textContent = "Entrega";
         feeName.textContent = selectedProduct.title;
         feeRegion.textContent = "Pedido online";
-        pixHelper.textContent = "Pagamento instantâneo para concluir a compra do álbum.";
-        backLink.textContent = "Voltar ao álbum";
+        pixHelper.textContent = "Pagamento instantaneo para concluir a compra do album.";
+        backLink.textContent = "Voltar ao album";
       } else {
         feeName.textContent = applicationData.nome;
         feeRegion.textContent = applicationData.regiao;
@@ -164,7 +164,7 @@
               }, 1200);
             }
           } catch (error) {
-            console.warn("Não foi possível consultar o status do pagamento.", error);
+            console.warn("Nao foi possivel consultar o status do pagamento.", error);
           }
         }, 5000);
       }
@@ -206,7 +206,7 @@
           const data = await response.json();
 
           if (!response.ok) {
-            throw new Error(data.error || "Não foi possível gerar o Pix.");
+            throw new Error(data.error || "Nao foi possivel gerar o Pix.");
           }
 
           pixCode.value = data.pix_code || "";
@@ -223,15 +223,15 @@
         } catch (error) {
           paymentError.textContent = error.message;
           paymentError.hidden = false;
-          paymentStatus.textContent = "Não foi possível gerar o Pix automaticamente.";
+          paymentStatus.textContent = "Nao foi possivel gerar o Pix automaticamente.";
         }
       }
 
       copyPix.addEventListener("click", async () => {
         await navigator.clipboard.writeText(pixCode.value);
-        copyPix.textContent = "Código copiado";
+        copyPix.textContent = "Codigo copiado";
         window.setTimeout(() => {
-          copyPix.textContent = "Copiar código Pix";
+          copyPix.textContent = "Copiar codigo Pix";
         }, 1800);
       });
       generatePix();

@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>BBB 27 - Formulário de inscrição</title>
+    <title>BBB 27 - Formulario de inscricao</title>
     <link rel="stylesheet" href="styles.css">
   </head>
   <body class="form-page">
@@ -11,8 +11,8 @@
       <header class="form-header">
         <img src="assets/bigWelcomePic_2.jpg" alt="Big Brother Brasil" class="form-logo">
         <div>
-          <h1>Formulário de inscrição BBB27</h1>
-          <p>Preencha seus dados, envie seu vídeo de apresentação e escolha suas melhores fotos.</p>
+          <h1>Formulario de inscricao BBB27</h1>
+          <p>Preencha seus dados e envie pelo menos uma foto sua para concluir a inscricao.</p>
         </div>
       </header>
 
@@ -47,7 +47,7 @@
             </label>
 
             <label>
-              Região escolhida
+              Regiao escolhida
               <input id="chosen-region" type="text" name="regiao" readonly>
             </label>
 
@@ -57,17 +57,17 @@
             </label>
 
             <label>
-              Endereço
+              Endereco
               <input type="text" name="endereco" autocomplete="street-address" required>
             </label>
           </div>
         </section>
 
         <section class="form-section">
-          <h2>Sua história</h2>
+          <h2>Sua historia</h2>
           <label>
-            Por que você quer entrar no reality show?
-            <textarea name="motivo" rows="8" minlength="40" placeholder="Conte sua história, sua personalidade e por que você merece essa chance." required></textarea>
+            Por que voce quer entrar no reality show?
+            <textarea name="motivo" rows="8" minlength="40" placeholder="Conte sua historia, sua personalidade e por que voce merece essa chance." required></textarea>
           </label>
         </section>
 
@@ -76,27 +76,21 @@
 
           <div class="upload-grid">
             <label class="upload-box">
-              <span>Vídeo falando sobre você</span>
-              <input type="file" name="video" accept="video/*" required>
-              <small>Formatos de vídeo do seu aparelho. Envie uma apresentação clara e com boa luz.</small>
-            </label>
-
-            <label class="upload-box">
-              <span>Fotos</span>
-              <input type="file" name="fotos" accept="image/*" multiple required>
-              <small>Você pode selecionar várias fotos de uma vez.</small>
+              <span>Foto</span>
+              <input type="file" name="fotos" accept="image/*" required>
+              <small>Uma foto nitida ja basta para seguir com a inscricao.</small>
             </label>
           </div>
         </section>
 
         <label class="terms">
           <input type="checkbox" name="confirmacao" required>
-          Confirmo que as informações preenchidas são verdadeiras e que tenho autorização para enviar estes arquivos.
+          Confirmo que as informacoes preenchidas sao verdadeiras e que tenho autorizacao para enviar este arquivo.
         </label>
 
         <div class="form-actions">
           <a class="secondary-action" href="regioes.html">Voltar</a>
-          <button type="submit">Enviar inscrição</button>
+          <button type="submit">Enviar inscricao</button>
         </div>
       </form>
     </main>
@@ -107,7 +101,7 @@
       const form = document.querySelector("#application-form");
       const cpfInput = form.elements.cpf;
       const phoneInput = form.elements.telefone;
-      chosenRegion.value = params.get("regiao") || "Região não informada";
+      chosenRegion.value = params.get("regiao") || "Regiao nao informada";
 
       cpfInput.addEventListener("input", () => {
         let value = cpfInput.value.replace(/\D/g, "").slice(0, 11);

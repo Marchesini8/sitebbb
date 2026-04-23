@@ -459,6 +459,49 @@ figcaption {
   line-height: 1.2;
 }
 
+.cta-section {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  border: 2px solid rgba(95, 0, 201, 0.16);
+  border-radius: 18px;
+  padding: 24px;
+  background:
+    linear-gradient(135deg, rgba(95, 0, 201, 0.08), rgba(123, 39, 232, 0.04)),
+    #fff;
+  box-shadow: 0 22px 40px rgba(95, 0, 201, 0.1);
+}
+
+.cta-section p {
+  margin: 0;
+  color: #464c57;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.primary-cta-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 58px;
+  border-radius: 999px;
+  padding: 0 28px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--purple), var(--purple-soft));
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  box-shadow: 0 18px 32px rgba(95, 0, 201, 0.24);
+  transition: transform 220ms var(--ease), box-shadow 220ms var(--ease), filter 220ms ease;
+}
+
+.primary-cta-button:hover {
+  opacity: 1;
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 22px 38px rgba(95, 0, 201, 0.3);
+  filter: saturate(1.06);
+}
+
 .tips h3 {
   margin: 0 0 12px;
   font-size: 14px;
@@ -557,6 +600,10 @@ figcaption {
   text-align: center;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
   animation: waiting-card-in 760ms var(--ease) both;
+}
+
+.waiting-card-fast {
+  min-height: auto;
 }
 
 .waiting-logo {
@@ -2068,6 +2115,18 @@ figcaption {
 
   .waiting-card {
     padding: 26px 18px 30px;
+  }
+
+  .cta-section {
+    padding: 20px 18px;
+  }
+
+  .primary-cta-button {
+    width: 100%;
+    min-height: 54px;
+    padding: 0 18px;
+    text-align: center;
+    font-size: 17px;
   }
 
   .waiting-card h1 {
