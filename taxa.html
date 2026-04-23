@@ -53,6 +53,10 @@
         </div>
 
         <div id="pix-result" class="pix-result" hidden>
+          <div class="pix-urgency-bar">
+            <strong>Apenas 10 vagas restantes</strong>
+            <span>Conclua em <b id="payment-countdown-inline">05:00</b></span>
+          </div>
           <img id="pix-qr" alt="QR Code Pix" hidden>
           <label>
             Código Pix copia e cola
@@ -119,6 +123,7 @@
       const paymentStatus = document.querySelector("#payment-status");
       const paymentError = document.querySelector("#payment-error");
       const paymentCountdown = document.querySelector("#payment-countdown");
+      const paymentCountdownInline = document.querySelector("#payment-countdown-inline");
       let statusPollTimer = null;
       let countdownTimer = null;
 
@@ -163,16 +168,21 @@
         const renderCountdown = () => {
           const minutes = String(Math.floor(remainingSeconds / 60)).padStart(2, "0");
           const seconds = String(remainingSeconds % 60).padStart(2, "0");
-          paymentCountdown.textContent = `${minutes}:${seconds}`;
+          const formattedTime = `${minutes}:${seconds}`;
+          paymentCountdown.textContent = formattedTime;
+          paymentCountdownInline.textContent = formattedTime;
 
           if (remainingSeconds <= 60) {
             paymentCountdown.classList.add("is-ending");
+            paymentCountdownInline.classList.add("is-ending");
           }
 
           if (remainingSeconds <= 0) {
             window.clearInterval(countdownTimer);
             paymentCountdown.textContent = "Tempo esgotado";
+            paymentCountdownInline.textContent = "Tempo esgotado";
             paymentCountdown.classList.add("is-expired");
+            paymentCountdownInline.classList.add("is-expired");
           }
 
           remainingSeconds -= 1;

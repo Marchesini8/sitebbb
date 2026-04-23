@@ -1725,6 +1725,45 @@ figcaption {
   animation: soft-rise 420ms var(--ease) both;
 }
 
+.pix-urgency-bar {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  border: 1px solid #ffd0c2;
+  border-radius: 10px;
+  padding: 12px 14px;
+  background: #fff6f2;
+}
+
+.pix-urgency-bar strong {
+  color: #b8321c;
+  font-size: 13px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.pix-urgency-bar span {
+  color: #8c3a20;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.pix-urgency-bar b {
+  color: #d53c13;
+  font-size: 18px;
+}
+
+.pix-urgency-bar b.is-ending {
+  color: #c62828;
+  animation: countdown-pulse 1s ease-in-out infinite;
+}
+
+.pix-urgency-bar b.is-expired {
+  color: #7a1f1f;
+  animation: none;
+}
+
 .pix-result[hidden],
 .payment-error[hidden] {
   display: none;
@@ -2448,6 +2487,12 @@ figcaption {
 
   .fee-actions {
     flex-direction: column;
+  }
+
+  .pix-urgency-bar {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
   }
 
   .admin-header,
